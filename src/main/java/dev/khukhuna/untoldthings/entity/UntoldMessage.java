@@ -1,8 +1,19 @@
 package dev.khukhuna.untoldthings.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import org.hibernate.annotations.Nationalized;
+
+@Entity
 public class UntoldMessage {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Nationalized
     private String messageTo;
+    @Nationalized
     private String message;
     private Long timestamp;
     private Integer likes;
