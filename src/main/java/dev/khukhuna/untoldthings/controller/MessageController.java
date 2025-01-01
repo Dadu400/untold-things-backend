@@ -1,5 +1,6 @@
 package dev.khukhuna.untoldthings.controller;
 
+import dev.khukhuna.untoldthings.dto.AddMessageResponse;
 import dev.khukhuna.untoldthings.dto.GetMessageResponse;
 import dev.khukhuna.untoldthings.dto.GetMessagesResponse;
 import dev.khukhuna.untoldthings.dto.PostMessageRequest;
@@ -7,6 +8,11 @@ import dev.khukhuna.untoldthings.entity.UntoldMessage;
 import dev.khukhuna.untoldthings.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -16,9 +22,11 @@ public class MessageController {
     private MessageRepository messageRepository;
 
     @GetMapping("/v1/messages")
-    public GetMessagesResponse getAllMessages() {
+    public GetMessagesResponse getApprovedMessages() {
         GetMessagesResponse messages = new GetMessagesResponse();
-        messages.setMessages(messageRepository.findAll());
+        List <UntoldMessage> response = messageRepository.getUntoldMessageByMessageStatus(UntoldMessage.MessageStatus.APPROVED);
+        Collections.reverse(response);
+        messages.setMessages(response);
         return messages;
     }
 
@@ -30,7 +38,7 @@ public class MessageController {
     }
 
     @PostMapping("/v1/messages")
-    public void addMessage(@RequestBody PostMessageRequest message) {
+    public AddMessageResponse addMessage(@RequestBody PostMessageRequest message) {
         if (message.getMessage().length() > 230) {
             throw new IllegalStateException("Message is too long");
         }
@@ -43,6 +51,8 @@ public class MessageController {
         newMessage.setMessageStatus(UntoldMessage.MessageStatus.PENDING);
 
         messageRepository.save(newMessage);
+
+        return new AddMessageResponse(newMessage.getId());
     }
 
     @PostMapping("/v1/messages/{id}/like")
