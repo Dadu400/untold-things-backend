@@ -1,20 +1,14 @@
 package dev.khukhuna.untoldthings.controller;
 
-import dev.khukhuna.untoldthings.dto.AddMessageResponse;
-import dev.khukhuna.untoldthings.dto.GetMessageResponse;
-import dev.khukhuna.untoldthings.dto.GetMessagesResponse;
-import dev.khukhuna.untoldthings.dto.PostMessageRequest;
+import dev.khukhuna.untoldthings.dto.*;
 import dev.khukhuna.untoldthings.entity.UntoldMessage;
 import dev.khukhuna.untoldthings.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class MessageController {
 
@@ -80,6 +74,16 @@ public class MessageController {
             untoldMessage.setShares(untoldMessage.getShares() + 1);
             messageRepository.save(untoldMessage);
         }
+    }
+
+    @PostMapping("/v1/messages/filtered")
+    public GetMessagesResponse getFilteredUntoldMessage(@RequestBody GetFilteredMessageRequest message) {
+        List <UntoldMessage> response = messageRepository.getFilteredUntoldMessage(UntoldMessage.MessageStatus.APPROVED, message.getQuery());
+        Collections.reverse(response);
+
+        GetMessagesResponse messages = new GetMessagesResponse();
+        messages.setMessages(response);
+        return messages;
     }
 }
 
