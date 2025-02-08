@@ -4,6 +4,10 @@ import dev.khukhuna.untoldthings.dto.*;
 import dev.khukhuna.untoldthings.entity.UntoldMessage;
 import dev.khukhuna.untoldthings.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -16,11 +20,16 @@ public class MessageController {
     private MessageRepository messageRepository;
 
     @GetMapping("/v1/messages")
-    public GetMessagesResponse getApprovedMessages() {
+    public GetMessagesResponse getApprovedMessages(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int size,
+            @RequestParam(defaultValue = "") String query
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<UntoldMessage> responsePage = messageRepository.getUntoldMessageByMessageStatus(UntoldMessage.MessageStatus.APPROVED, query, pageable);
+
         GetMessagesResponse messages = new GetMessagesResponse();
-        List <UntoldMessage> response = messageRepository.getUntoldMessageByMessageStatus(UntoldMessage.MessageStatus.APPROVED);
-        Collections.reverse(response);
-        messages.setMessages(response);
+        messages.setMessages(responsePage.getContent());
         return messages;
     }
 
