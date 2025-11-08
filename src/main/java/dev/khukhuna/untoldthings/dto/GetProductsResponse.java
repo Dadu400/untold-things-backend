@@ -9,7 +9,7 @@ public class GetProductsResponse {
     private List<Product> products = new ArrayList<>();
 
     public GetProductsResponse() {
-    };
+    }
 
     public List<Product> getProducts() {
         return products;
