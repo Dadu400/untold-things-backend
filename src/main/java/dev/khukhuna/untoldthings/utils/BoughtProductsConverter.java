@@ -10,7 +10,7 @@ import java.util.List;
 @Converter
 public class BoughtProductsConverter implements AttributeConverter<List<BoughtProduct>, String> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public String convertToDatabaseColumn(List<BoughtProduct> boughtProducts) {

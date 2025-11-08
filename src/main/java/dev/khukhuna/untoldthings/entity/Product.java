@@ -1,6 +1,8 @@
 package dev.khukhuna.untoldthings.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 
 @Entity
@@ -10,6 +12,7 @@ public class Product {
     private String name;
     private String description;
     private double price;
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     public enum Category {
@@ -45,7 +48,7 @@ public class Product {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -56,6 +59,5 @@ public class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
-
 
 }
